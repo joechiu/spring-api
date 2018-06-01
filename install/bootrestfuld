@@ -1,0 +1,46 @@
+#!/bin/sh
+SERVICE_NAME=BootRestfuld
+JARFILE=/opt/dr/bin/dr-rest-service.jar
+PIDFILE=/tmp/boot-pid
+ERRFILE=/tmp/boot-stderr.log
+LOGFILE=/tmp/boot-log.log
+case $1 in
+    start)
+        echo "Starting $SERVICE_NAME ..."
+        if [ ! -f $PIDFILE ]; then
+            # nohup java -jar $JARFILE /tmp 2>> /dev/null >> /dev/null &
+            nohup java -jar $JARFILE /tmp 2>> $ERRFILE >> $LOGFILE &
+            echo $! > $PIDFILE
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is already running ..."
+        fi
+    ;;
+    stop)
+        if [ -f $PIDFILE ]; then
+            PID=$(cat $PIDFILE);
+            echo "$SERVICE_NAME stoping ..."
+            kill $PID;
+            echo "$SERVICE_NAME stopped ..."
+            rm $PIDFILE
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+    restart)
+        if [ -f $PIDFILE ]; then
+            PID=$(cat $PIDFILE);
+            echo "$SERVICE_NAME stopping ...";
+            kill $PID;
+            echo "$SERVICE_NAME stopped ...";
+            rm $PIDFILE
+            echo "$SERVICE_NAME starting ..."
+            # nohup java -jar $JARFILE /tmp 2>> /dev/null >> /dev/null &
+            nohup java -jar $JARFILE /tmp 2>> $ERRFILE >> $LOGFILE &
+            echo $! > $PIDFILE
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;;
+esac 
