@@ -92,7 +92,7 @@
       args:
         warn: no
 
-#    this does well too
+#    this works well too
 #    - name: start rest daemon
 #      command: /etc/init.d/bootrestfuld start
 
