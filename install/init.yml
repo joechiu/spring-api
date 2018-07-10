@@ -7,7 +7,9 @@
     rest_dir: dr-rest-service
     git_repo: spring-api
     back_dir: /tmp
-    new_dir: [ cache, bin, tmp, logs ]
+    new_dirs: [ cache, bin, tmp, logs ]
+    rm_dirs: [ '.git', install, LICENSE, 'README.md' ]
+
   tasks:
     # - name: Back spring api to backup directory
     #   copy: remote_src=True src={{work_dir}} dest={{back_dir}}
@@ -21,7 +23,6 @@
         path: "{{work_dir}}"
         dest: "{{back_dir}}/{{item}}.tgz"
         mode: 0755
-        owner: joechiu
       with_items:
         - "{{app}}"
       when: wdir.stat.exists
@@ -37,11 +38,50 @@
         repo: 'https://github.com/joechiu/spring-api.git'
         dest: '{{work_dir}}'
 
+    - name: Create directories for spring api to backup directory
+      file: 
+        path: "{{work_dir}}/{{item}}"
+        state: directory
+        mode: 0777
+      with_items:
+        - "{{new_dirs}}"
+
     - name: Remove work directory to create a new workin place
       file: path={{work_dir}}/{{rest_dir}}/gradlew mode=0755
 
     - name: Compile restful application by gradle
-      command: chdir={{work_dir}}/{{rest_dir}} ./gradlew build
+      command: chdir={{work_dir}}/{{rest_dir}} ./gradlew build --warning-mode=all
 
+    - name: Build the rest service source
+      copy:
+        src: "{{work_dir}}/{{rest_dir}}/build/libs/dr-rest-service-0.0.1-SNAPSHOT.jar"
+        dest: "{{work_dir}}/bin/dr-rest-service.jar"
+
+    - name: create restful daemon
+      copy:
+        src: "{{work_dir}}/install/bootrestfuld"
+        dest: "/etc/init.d/bootrestfuld"
+
+    - name: change mode to bin
+      file: 
+        path: "{{item}}"
+        mode: 0755
+      with_items:
+        - "{{work_dir}}/bin"
+        - "/etc/init.d/bootrestfuld"
+
+    - name: start rest daemon
+      command: /etc/init.d/bootrestfuld restart
+
+
+
+
+#     - name: Redundant directories checkout from github
+#       file: 
+#         path: "{{work_dir}}/{{item}}"
+#         state: absent
+#       with_items:
+#         - "{{rest_dir}}" 
+#         - "{{rm_dirs}}" 
 
 
