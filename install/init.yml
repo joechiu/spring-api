@@ -7,6 +7,7 @@
     rest_dir: dr-rest-service
     git_repo: spring-api
     back_dir: /tmp
+    new_dir: [ cache, bin, tmp, logs ]
   tasks:
     # - name: Back spring api to backup directory
     #   copy: remote_src=True src={{work_dir}} dest={{back_dir}}
