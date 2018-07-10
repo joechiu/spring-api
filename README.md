@@ -19,8 +19,10 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 ## Deployment
 
 * copy and paste the commands in install/init.sh to the terminal to automation deploy the codes 
-* download the script by https://github.com/joechiu/spring-Api/blob/master/install/init.sh
-    - # ansible-playbook -vvv init.yml
+* download yaml script: 
+    - $ wget https://raw.githubusercontent.com/joechiu/spring-api/master/install/init.yml
+* run ansible playbook:
+    - $ ansible-playbook -vvv init.yml
 
 ## Test
 - ApplicationTests.java for spring boot mvc, no test cases.
