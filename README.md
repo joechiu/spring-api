@@ -30,7 +30,7 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 
 ## Endpoints
 
- - URL: http://eland.nz:8080/
+ - URL: http://eland.nz:8090/
 
 |Endpoint        |Params                         |Method                       |
 |----------------|-------------------------------|-----------------------------|
@@ -42,14 +42,14 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 ## CLI
 
 1. list CSV records by query pickup date with cache mode:
-    * curl "http://eland.nz:8080/query?pickdate=2013-12-26"
+    * curl "http://eland.nz:8090/query?pickdate=2013-12-26"
 2. list CSV records by query pickup date without cache mode:
-    * curl "http://eland.nz:8080/query?pickdate=2013-12-26&nocache=1"
+    * curl "http://eland.nz:8090/query?pickdate=2013-12-26&nocache=1"
 
 3. clean all caches
-    * curl -H "Auth: ThisIsNotAnAuth" -X POST "http://eland.nz:8080/cache?clean=1"
+    * curl -H "Auth: ThisIsNotAnAuth" -X POST "http://eland.nz:8090/cache?clean=1"
 4. clean the caches older than 15 days
-    * curl -H "Auth: ThisIsNotAnAuth" -X POST "http://eland.nz:8080/cache?clean=1&day=15"
+    * curl -H "Auth: ThisIsNotAnAuth" -X POST "http://eland.nz:8090/cache?clean=1&day=15"
 
 ## ISSUES
 * Whitelabel Error Page showing on the page if meet a severlet error

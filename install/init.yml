@@ -9,6 +9,7 @@
     back_dir: /tmp
     new_dirs: [ cache, bin, tmp, logs ]
     rm_dirs: [ '.git', install, LICENSE, 'README.md' ]
+    port: 8090
 
   tasks:
     - name: stat foo
@@ -69,6 +70,31 @@
         - "{{work_dir}}/bin/dr-rest-service.jar"
         - "/etc/init.d/bootrestfuld"
 
+    - name: get boot restfuld | iptables rules
+      shell: iptables -L
+      register: iptablesrules
+      always_run: yes
+
+    - name: add boot restfuld iptables rule
+      command: /sbin/iptables -I INPUT 1 -p tcp --dport {{port}} -j ACCEPT -m comment --comment "boot rest daemon"
+      when: iptablesrules.stdout.find("boot rest") == -1
+
+    - name: save iptables
+      command: iptables-save
+
+    - name: restart iptables
+      service: name=ufw state=restarted
+
+#    - name: start rest daemon
+#      command: /etc/init.d/bootrestfuld start
+
+    - name: restart rest daemon
+      shell: |
+        /etc/init.d/bootrestfuld stop
+        /etc/init.d/bootrestfuld start
+      args:
+        warn: no
+
     - name: cleaning redundant directories checkout from github
       file: 
         path: "{{work_dir}}/{{item}}"
@@ -76,14 +102,3 @@
       with_items:
         - "{{rest_dir}}" 
         - "{{rm_dirs}}" 
-
-    - name: start rest daemon
-      command: /etc/init.d/bootrestfuld start
-
-#     - name: restart rest daemon
-#       shell: |
-#         /etc/init.d/bootrestfuld stop
-#         /etc/init.d/bootrestfuld start
-#       args:
-#         warn: no
-
