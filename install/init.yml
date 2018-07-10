@@ -85,15 +85,16 @@
     - name: restart iptables
       service: name=ufw state=restarted
 
-#    - name: start rest daemon
-#      command: /etc/init.d/bootrestfuld start
-
     - name: restart rest daemon
       shell: |
         /etc/init.d/bootrestfuld stop
         /etc/init.d/bootrestfuld start
       args:
         warn: no
+
+#    this does well too
+#    - name: start rest daemon
+#      command: /etc/init.d/bootrestfuld start
 
     - name: cleaning redundant directories checkout from github
       file: 
