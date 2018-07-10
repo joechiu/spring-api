@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DIR=/opt/dr
-GIT=DR-Api
+GIT=spring-api
 
 while true; do
     read -p "Do you cd to the git? Do you want to deploy[Y/n]? " yn
@@ -24,7 +24,7 @@ git clone https://github.com/joechiu/$GIT.git
 echo "4. deploy the git source to the workspace"
 cd $GIT 
 chmod 777 cache tmp logs
-chmod 755 scripts scripts/dr-api.pl
+chmod 755 scripts scripts/spring-api.pl
 sudo scp -rp . $DIR
 
 echo "5. goto dr rest service for jar compile"

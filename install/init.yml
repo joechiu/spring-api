@@ -1,0 +1,46 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    app: dr
+    work_dir: /opt/dr
+    rest_dir: dr-rest-service
+    git_repo: spring-api
+    back_dir: /tmp
+  tasks:
+    # - name: Back spring api to backup directory
+    #   copy: remote_src=True src={{work_dir}} dest={{back_dir}}
+
+    - name: stat foo
+      stat: path="{{work_dir}}"
+      register: wdir
+
+    - name: Backup spring api to backup directory
+      archive:
+        path: "{{work_dir}}"
+        dest: "{{back_dir}}/{{item}}.tgz"
+        mode: 0755
+        owner: joechiu
+      with_items:
+        - "{{app}}"
+      when: wdir.stat.exists
+
+    - name: Remove work directory for a new working place
+      file: path={{work_dir}} state=absent
+
+    - name: Create working place
+      file: path={{work_dir}} state=directory mode=0755
+
+    - name: clone docker jenkins source from git if os is centos
+      git:
+        repo: 'https://github.com/joechiu/spring-api.git'
+        dest: '{{work_dir}}'
+
+    - name: Remove work directory to create a new workin place
+      file: path={{work_dir}}/{{rest_dir}}/gradlew mode=0755
+
+    - name: Compile restful application by gradle
+      command: chdir={{work_dir}}/{{rest_dir}} ./gradlew build
+
+
+

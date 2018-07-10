@@ -24,7 +24,7 @@ public class ApiController {
     private int DAY;
     private String URL="http://eland.nz:8080";
     // cache functions
-    private String PRM = "/opt/dr/scripts/dr-api.pl";
+    private String PRM = "/opt/dr/scripts/spring-api.pl";
     // initiate logger
     private static final Logger logger = LogManager.getLogger(ApiController.class);
     // encrypted md5 hex auth
