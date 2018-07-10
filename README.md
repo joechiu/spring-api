@@ -1,5 +1,5 @@
 # spring-Api
-A Spring Boot restful API designed for users to download the query result as a CSV file based on a lite caching mechanisms.
+A Spring Boot restful API designed for users to download the query result as a CSV file based on a lite caching mechanism.
 
 ## Synopsis
 
