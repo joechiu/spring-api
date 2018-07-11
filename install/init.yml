@@ -10,6 +10,7 @@
     new_dirs: [ cache, bin, tmp, logs ]
     rm_dirs: [ '.git', install, LICENSE, 'README.md' ]
     port: 8090
+    portkey: Boot Rest daemon
 
   tasks:
     - name: stat foo
@@ -46,7 +47,7 @@
     - name: remove work directory to create a new workin place
       file: path={{work_dir}}/{{rest_dir}}/gradlew mode=0755
 
-    - name: compile restful application by gradle
+    - name: build spring restful application by gradle
       command: chdir={{work_dir}}/{{rest_dir}} ./gradlew build --warning-mode=all
 
     - name: build the rest service source
@@ -66,7 +67,6 @@
         owner: root 
         group: root
       with_items:
-#         - "{{work_dir}}/bin"
         - "{{work_dir}}/bin/dr-rest-service.jar"
         - "/etc/init.d/bootrestfuld"
 
@@ -75,15 +75,18 @@
       register: iptablesrules
       always_run: yes
 
-    - name: add boot restfuld iptables rule
-      command: /sbin/iptables -I INPUT 1 -p tcp --dport {{port}} -j ACCEPT -m comment --comment "boot rest daemon"
-      when: iptablesrules.stdout.find("boot rest") == -1
+    - name: add boot restfuld to iptables rule
+      command: /sbin/iptables -I INPUT 1 -p tcp --dport {{port}} -j ACCEPT -m comment --comment "{{portkey}}"
+      when: iptablesrules.stdout.find("{{portkey}}") == -1
 
     - name: save iptables
-      command: iptables-save
+      command: service iptables save
+      when: ansible_distribution == 'CentOS'
 
-    - name: restart iptables
-      service: name=ufw state=restarted
+    # need iptables-persistent pre-installed
+    - name: save iptables
+      shell: iptables-save > /etc/iptables/rules.v4
+      when: ansible_distribution == 'Ubuntu'
 
     - name: restart rest daemon
       shell: |
@@ -92,9 +95,19 @@
       args:
         warn: no
 
-#    this works well too
-#    - name: start rest daemon
-#      command: /etc/init.d/bootrestfuld start
+    - name: fixing mysql error 13 permission issue
+      lineinfile:
+        path: /etc/apparmor.d/usr.sbin.mysqld
+        regexp: '/opt/dr/cache/'
+        insertafter: '^(.*)/var/lib/mysql/(.*)rwk(.*)$'
+        line: '  /opt/dr/cache/** rwk,'
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: reload apparmor
+      service:
+        name: apparmor
+        state: started
+      when: ansible_distribution == 'Ubuntu'
 
     - name: cleaning redundant directories checkout from github
       file: 
