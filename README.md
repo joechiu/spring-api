@@ -23,6 +23,7 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
     * $ wget https://raw.githubusercontent.com/joechiu/spring-api/master/install/init.yml
 3. run ansible playbook:
     * $ ansible-playbook -vvv init.yml
+4. add port 8090 to cloud platforms
 
 ## Test
 - ApplicationTests.java for spring boot mvc, no test cases.
