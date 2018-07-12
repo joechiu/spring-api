@@ -98,7 +98,10 @@
         - ansible_distribution_major_version == "6"
 
     - name: save iptables in centos 7
-      command: /bin/ls -l
+      firewalld:
+        port: 8090/tcp
+        permanent: true
+        state: enabled
       when: ansible_os_family == "CentOS" and ansible_lsb.major_release|int > 6
 
     # need iptables-persistent pre-installed
