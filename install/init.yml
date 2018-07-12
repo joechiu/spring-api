@@ -41,7 +41,7 @@
       file: 
         path: "{{work_dir}}/{{item}}"
         state: directory
-        mode: 0666
+        mode: 0777
       with_items:
         - "{{new_dirs}}"
 
