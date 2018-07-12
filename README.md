@@ -23,7 +23,7 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 2. run ansible playbook:
     * $ sudo ansible-playbook -vvv init.yml
 3. OR:
-    * wget --no-cache https://raw.githubusercontent.com/joechiu/spring-api/master/install/init.yml && time sudo ansible-playbook -vvv init.yml
+    * curl -O https://raw.githubusercontent.com/joechiu/spring-api/master/install/init.yml && time sudo ansible-playbook -vvv init.yml
 4. add port 8090 to cloud platforms
 
 ## Test
