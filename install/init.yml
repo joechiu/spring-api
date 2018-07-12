@@ -104,7 +104,7 @@
         insertafter: '^#(.*)$'
         line: '{{work_dir}}/bin/bootrestfuld start'
 
-#     - name: either run command for centos if reboot (tested in centos 6 only)
+#     - name: alternative way to run command for centos when reboot (tested in centos 6 only)
 #       lineinfile:
 #         path: /etc/inittab
 #         regexp: '^{{work_dir}}'
