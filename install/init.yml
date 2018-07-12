@@ -21,9 +21,6 @@
         packages:
         - java
         - java-devel
-      when: 
-        - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version == "7"
 
     - name: stat foo
       stat: path="{{work_dir}}"
