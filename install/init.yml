@@ -14,6 +14,15 @@
     PIDFILE: /tmp/boot-pid
 
   tasks:
+    - name: install required java packages in centos 7
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - java
+        - java-1.8.0-openjdk-devel
+      when: ansible_distribution == 'CentOS'
+
     - name: stat foo
       stat: path="{{work_dir}}"
       register: wdir
