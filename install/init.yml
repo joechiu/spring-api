@@ -20,7 +20,7 @@
       vars:
         packages:
         - java
-        - java-1.8.0-openjdk-devel
+        - java-devel
       when: ansible_distribution == 'CentOS'
 
     - name: stat foo
