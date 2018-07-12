@@ -14,7 +14,7 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 * mysql 5.1.73
 * perl v5.10.1
 * bourne shell
-* Linux Centos 6.9
+* Linux Centos 6.9 or Ubuntu 16.04 LTS
 
 ## Deployment
 
