@@ -11,6 +11,7 @@
     rm_dirs: [ '.git', install, LICENSE, 'README.md' ]
     port: 8090
     portkey: Boot Rest daemon
+    PIDFILE: /tmp/boot-pid
 
   tasks:
     - name: stat foo
@@ -31,12 +32,12 @@
     - name: create working place
       file: path={{work_dir}} state=directory mode=0755
 
-    - name: clone docker jenkins source from git if os is centos
+    - name: clone spring api from github
       git:
         repo: 'https://github.com/joechiu/spring-api.git'
         dest: '{{work_dir}}'
 
-    - name: create directories for spring api to backup directory
+    - name: create required directories for spring api
       file: 
         path: "{{work_dir}}/{{item}}"
         state: directory
@@ -58,7 +59,7 @@
     - name: create restful daemon
       copy:
         src: "{{work_dir}}/install/bootrestfuld"
-        dest: "/etc/init.d/bootrestfuld"
+        dest: "{{work_dir}}/bin/bootrestfuld"
 
     - name: change mode to 0755
       file: 
@@ -66,9 +67,9 @@
         mode: 0755
         owner: root 
         group: root
+        recurse: yes
       with_items:
-        - "{{work_dir}}/bin/dr-rest-service.jar"
-        - "/etc/init.d/bootrestfuld"
+        - "{{work_dir}}/bin"
 
     - name: get boot restfuld | iptables rules
       shell: iptables -L
@@ -90,10 +91,26 @@
 
     - name: restart rest daemon
       shell: |
-        /etc/init.d/bootrestfuld stop
-        /etc/init.d/bootrestfuld start
+        {{work_dir}}/bin/bootrestfuld stop
+        {{work_dir}}/bin/bootrestfuld start
+        [ -f {{PIDFILE}} ] && rm {{PIDFILE}}
       args:
         warn: no
+
+    - name: run command if reboot
+      lineinfile:
+        path: /etc/rc.local
+        regexp: '^{{work_dir}}'
+        insertafter: '^#(.*)$'
+        line: '{{work_dir}}/bin/bootrestfuld start'
+
+#     - name: either run command for centos if reboot (tested in centos 6 only)
+#       lineinfile:
+#         path: /etc/inittab
+#         regexp: '^{{work_dir}}'
+#         insertafter: '^#(.*)$'
+#         line: 'bootrest:3:respawn:{{work_dir}}/bin/bootrestfuld start'
+#       when: ansible_distribution == 'CentOS'
 
     - name: fixing mysql error 13 permission issue
       lineinfile:
@@ -116,3 +133,4 @@
       with_items:
         - "{{rest_dir}}" 
         - "{{rm_dirs}}" 
+
