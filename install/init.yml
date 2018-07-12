@@ -21,7 +21,9 @@
         packages:
         - java
         - java-devel
-      when: ansible_distribution == 'CentOS'
+      when: 
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version == "7"
 
     - name: stat foo
       stat: path="{{work_dir}}"
@@ -89,9 +91,15 @@
       command: /sbin/iptables -I INPUT 1 -p tcp --dport {{port}} -j ACCEPT -m comment --comment "{{portkey}}"
       when: iptablesrules.stdout.find("{{portkey}}") == -1
 
-    - name: save iptables
+    - name: save iptables in centos 6
       command: service iptables save
-      when: ansible_distribution == 'CentOS'
+      when: 
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version == "6"
+
+    - name: save iptables in centos 7
+      command: /bin/ls -l
+      when: ansible_os_family == "CentOS" and ansible_lsb.major_release|int > 6
 
     # need iptables-persistent pre-installed
     - name: save iptables
