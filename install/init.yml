@@ -147,6 +147,7 @@
       service:
         name: apparmor
         state: startedo
+      when: ansible_distribution == 'Ubuntu'
 
     - name: Configure SELinux to enable mysql connection
       seboolean: name={{item}} state=true persistent=yes
