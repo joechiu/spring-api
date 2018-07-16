@@ -143,6 +143,17 @@
         state: started
       when: ansible_distribution == 'Ubuntu'
 
+    - name: enable mysql network connect
+      service:
+        name: apparmor
+        state: startedo
+
+    - name: Configure SELinux to enable mysql connection
+      seboolean: name={{item}} state=true persistent=yes
+      with_items:
+        - selinuxuser_mysql_connect_enabled
+      when: ansible_distribution == 'CentOS'
+
     - name: cleaning redundant directories checkout from github
       file: 
         path: "{{work_dir}}/{{item}}"
