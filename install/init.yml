@@ -149,8 +149,8 @@
         state: startedo
       when: ansible_distribution == 'Ubuntu'
 
-    - name: Configure SELinux to enable mysql connection
-      seboolean: name={{item}} state=true persistent=yes
+    - name: Configure SELinux to disable mysql connection
+      seboolean: name={{item}} state=false persistent=yes
       with_items:
         - selinuxuser_mysql_connect_enabled
       when: ansible_distribution == 'CentOS'
