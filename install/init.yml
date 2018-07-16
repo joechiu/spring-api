@@ -5,6 +5,7 @@
     app: dr
     work_dir: /opt/dr
     rest_dir: dr-rest-service
+    rc_local: /etc/rc.d/rc.local
     git_repo: spring-api
     back_dir: /tmp
     new_dirs: [ cache, bin, tmp, logs ]
@@ -120,6 +121,9 @@
         regexp: '^{{work_dir}}'
         insertafter: '^#(.*)$'
         line: '{{work_dir}}/bin/bootrestfuld start'
+
+    - name: change run command to 755
+      file: path={{rc_local}} mode=0755
 
 #     - name: alternative way to run command for centos when reboot (tested in centos 6 only)
 #       lineinfile:
