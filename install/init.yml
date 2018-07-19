@@ -5,7 +5,6 @@
     app: dr
     work_dir: /opt/dr
     rest_dir: dr-rest-service
-    rc_local: /etc/rc.d/rc.local
     git_repo: spring-api
     back_dir: /tmp
     new_dirs: [ cache, bin, tmp, logs ]
@@ -22,6 +21,16 @@
         packages:
         - java
         - java-devel
+      when: ansible_os_family == "CentOS"
+
+    - name: install required java packages in Ubuntu
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - java
+        - java-devel
+      when: ansible_os_family == "Ubuntu"
 
     - name: stat foo
       stat: path="{{work_dir}}"
@@ -122,9 +131,6 @@
         insertafter: '^#(.*)$'
         line: '{{work_dir}}/bin/bootrestfuld start'
 
-    - name: change run command to 755
-      file: path={{rc_local}} mode=0755
-
 #     - name: alternative way to run command for centos when reboot (tested in centos 6 only)
 #       lineinfile:
 #         path: /etc/inittab
@@ -133,7 +139,7 @@
 #         line: 'bootrest:3:respawn:{{work_dir}}/bin/bootrestfuld start'
 #       when: ansible_distribution == 'CentOS'
 
-    - name: fixing mysql error 13 permission issue
+    - name: fixing mysql error 13 permission issue for Ubuntu
       lineinfile:
         path: /etc/apparmor.d/usr.sbin.mysqld
         regexp: '/opt/dr/cache/'
@@ -141,23 +147,15 @@
         line: '  /opt/dr/cache/** rwk,'
       when: ansible_distribution == 'Ubuntu'
 
+    - name: fixing mysql error 13 permission issue for CentOS
+      command: chcon -Rv --type=tmp_t {{work_dir}}/cache
+      when: ansible_distribution == 'CentOS'
+
     - name: reload apparmor
       service:
         name: apparmor
         state: started
       when: ansible_distribution == 'Ubuntu'
-
-    - name: enable mysql network connect
-      service:
-        name: apparmor
-        state: startedo
-      when: ansible_distribution == 'Ubuntu'
-
-    - name: Configure SELinux to disable mysql connection
-      seboolean: name={{item}} state=false persistent=yes
-      with_items:
-        - selinuxuser_mysql_connect_enabled
-      when: ansible_distribution == 'CentOS'
 
     - name: cleaning redundant directories checkout from github
       file: 
@@ -166,4 +164,3 @@
       with_items:
         - "{{rest_dir}}" 
         - "{{rm_dirs}}" 
-
