@@ -21,7 +21,7 @@
         packages:
         - java
         - java-devel
-      when: ansible_os_family == "CentOS"
+      when: ansible_distribution == "CentOS"
 
     - name: install required java packages in Ubuntu
       apt:
@@ -30,7 +30,7 @@
         packages:
         - java
         - java-devel
-      when: ansible_os_family == "Ubuntu"
+      when: ansible_distribution == "Ubuntu"
 
     - name: stat foo
       stat: path="{{work_dir}}"
@@ -109,7 +109,7 @@
         port: 8090/tcp
         permanent: true
         state: enabled
-      when: ansible_os_family == "CentOS" and ansible_lsb.major_release|int > 6
+      when: ansible_distribution == "CentOS" and ansible_lsb.major_release|int > 6
 
     # need iptables-persistent pre-installed
     - name: save iptables
