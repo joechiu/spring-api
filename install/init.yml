@@ -109,7 +109,7 @@
         port: 8090/tcp
         permanent: true
         state: enabled
-      when: ansible_distribution == "CentOS" and ansible_lsb.major_release|int > 6
+      when: ansible_distribution == "CentOS" and ansible_distribution_version|int > 6
 
     # need iptables-persistent pre-installed
     - name: save iptables
