@@ -32,7 +32,7 @@ The API is developed by java, perl, bourne shell, SQL and tested by Linux.
 
 ## Endpoints
 
- - URL: http://eland.nz:8090/
+ - URL: <s>http://eland.nz:8090/</s>
 
 |Endpoint        |Params                         |Method                       |
 |----------------|-------------------------------|-----------------------------|
